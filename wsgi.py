@@ -1,4 +1,4 @@
-from ytd_rest import app as application
+from ytd_rest import app
 
 if __name__ == "__main__":
-    application.run()
+    app.run()
