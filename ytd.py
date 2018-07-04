@@ -3,18 +3,22 @@ from __future__ import unicode_literals
 from urllib.parse import unquote
 
 import youtube_dl
-from flask import Flask, jsonify, request
+from flask import jsonify, request, Flask, render_template
 from youtube_dl import downloader
 from youtube_dl.downloader import http
 
-app = Flask(__name__)
+app = Flask(__name__, instance_relative_config=True,
+            static_folder='./dist/static',
+            template_folder='./dist')
 
+@app.route('/')
+def index():
+    return render_template("index.html")
 
 @app.route('/parse', methods=["GET"])
 def parse():
     url = request.args.get('page')
     page = unquote(url)
-
     print("parse: " + page)
     # realUrl = base64.urlsafe_b64decode(url).decode('utf-8')
     ydl_opts = {
@@ -76,16 +80,14 @@ def parse():
             info['ext'] = result['ext']
             info['filename'] = result['filename']
             info['is_http'] = result['is_http']
-            info['http_headers'] = result['http_headers']
+            # info['http_headers'] = result['http_headers']
 
             if result.__contains__('is_live'):
                 info['is_live'] = result['is_live']
             if result.__contains__('description'):
-                info['description'] = result['description']
+                pass
+                # info['description'] = result['description']
             if result.__contains__('thumbnail'):
                 info['thumbnail'] = result['thumbnail']
 
         return jsonify(info)
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')
