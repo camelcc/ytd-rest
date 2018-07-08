@@ -3,17 +3,15 @@ from __future__ import unicode_literals
 from urllib.parse import unquote
 
 import youtube_dl
-from flask import jsonify, request, Flask, render_template
+from flask import jsonify, request, Flask
 from youtube_dl import downloader
 from youtube_dl.downloader import http
 
-app = Flask(__name__, instance_relative_config=True,
-            static_folder='./dist/static',
-            template_folder='./dist')
+app = Flask(__name__, static_url_path='')
 
 @app.route('/')
 def index():
-    return render_template("index.html")
+    return app.send_static_file('index.html')
 
 @app.route('/parse', methods=["GET"])
 def parse():
